@@ -38,16 +38,16 @@ EasyXls.openGenerater();
 
 
 ##支持的列类型
-int,
-long,
-float,
-double,
-java.lang.Integer,
-java.lang.Long,
-java.lang.Float,
-java.lang.Double,
-java.util.Date,
-java.math.BigDecimal
+ - int
+ - long
+ - float
+ - double
+ - java.lang.Integer
+ - java.lang.Long
+ - java.lang.Float
+ - java.lang.Double
+ - java.util.Date
+ - java.math.BigDecimal
 
 ##项目依赖  
 
