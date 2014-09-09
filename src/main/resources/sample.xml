@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<excel>
+  <!--
+          必填项为:name,header，其他全部选填
+
+          title:excel表格中第一行合并单元格居中显示的内容，空的时候不输出
+          description：第二行显示的说明，空的时候不输出
+          cache:是否缓存，默认为true，true时，解析一次xml后不会再次解析，也无法进行实时修改。如果想实时修改，请设为false
+          class:类路径
+          sheet:导出excel的sheet名（从0开始计算）
+          startRow:从第几行开始读取(从0开始计算）
+          columns:导出列的信息
+                  column:一个列
+                          name:列对应Object中的字段名，必须有标准的get方法
+                          header:导出excel中显示的标题
+                          width:列宽(单位像素)
+                          type:列的类型，读取时需要用到
+   -->
+  <title>Excel信息</title>
+  <description>基本信息导出</description>
+  <cache>false</cache>
+  <!-- 读取配置 开始 -->
+  <class>com.abel533.property.model.po.Owner</class>
+  <sheetNum>0</sheetNum>
+  <startRow>1</startRow>
+  <!-- 读取配置 结束 -->
+  <author>abel533</author>
+  <sheet>业主信息</sheet>
+  <columns>
+    <column>
+      <name>name</name>
+      <type>java.lang.String</type>
+      <header>姓名</header>
+      <width>120</width>
+    </column>
+    <column>
+      <name>address</name>
+      <type>java.lang.String</type>
+      <header>房号</header>
+      <width>120</width>
+    </column>
+    <column>
+      <name>conarea</name>
+      <type>java.math.BigDecimal</type>
+      <header>建筑面积</header>
+      <width>160</width>
+    </column>
+    <column>
+      <name>warmarea</name>
+      <type>java.math.BigDecimal</type>
+      <header>取暖面积</header>
+      <width>160</width>
+    </column>
+    <column>
+      <name>idcard</name>
+      <type>java.lang.String</type>
+      <header>身份证号</header>
+      <width>200</width>
+    </column>
+    <column>
+      <name>phone</name>
+      <type>java.lang.String</type>
+      <header>联系电话</header>
+      <width>200</width>
+    </column>
+    <column>
+      <name>remark</name>
+      <type>java.lang.String</type>
+      <header>备注</header>
+      <width>200</width>
+    </column>
+  </columns>
+</excel>

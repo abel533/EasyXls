@@ -1,0 +1,16 @@
+*.jar
+*.class
+~*.*
+# Maven #
+target/
+
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.externalToolBuilders/
+.settings/
+.classpath
+.mymetadata
+.project
