@@ -9,6 +9,7 @@ import jxl.Workbook;
 import jxl.write.*;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.Boolean;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -21,9 +22,8 @@ import java.util.*;
  */
 public class EasyXls {
 
-    private static Map<String, DlExcel> cache = new HashMap<String, DlExcel>();
-
     public static final String EXCEL = ".xls";
+    private static Map<String, DlExcel> cache = new HashMap<String, DlExcel>();
 
     /**
      * 获取xml配置对象
@@ -39,7 +39,7 @@ public class EasyXls {
         if (dlExcel == null) {
             throw new RuntimeException("获取xml配置文件出错!");
         }
-        if (dlExcel.getCache() != null && dlExcel.getCache()) {
+        if (dlExcel.getCache() == null || dlExcel.getCache()) {
             cache.put(xmlPath, dlExcel);
         }
         return dlExcel;
@@ -48,7 +48,7 @@ public class EasyXls {
     /**
      * 打开代码生成器，请在项目中执行，只有这样才能加载相应的类
      */
-    public static void openGenerater(){
+    public static void openGenerater() {
         GenXml.run();
     }
 
@@ -85,6 +85,39 @@ public class EasyXls {
     }
 
     /**
+     * 导入xml到List
+     *
+     * @param xmlPath     xml完整路径
+     * @param inputStream xls文件流
+     * @return List对象
+     * @throws Exception
+     */
+    public static List<?> xls2List(String xmlPath, InputStream inputStream) throws Exception {
+        List<Object> list = new ArrayList<Object>();
+        try {
+            //获取配置文件
+            DlExcel config = getDlExcel(xmlPath);
+            String[] names = config.getNames();
+            String[] types = config.getTypes();
+
+            Workbook wb = Workbook.getWorkbook(inputStream);
+            Sheet sheet = wb.getSheet(config.getSheetNum());
+
+            for (int i = config.getStartRow(); i < sheet.getRows(); i++) {
+                Object obj = Class.forName(config.getClazz()).newInstance();
+                for (int j = 0; j < sheet.getColumns(); j++) {
+                    setValue(obj, names[j], types[j], sheet.getCell(j, i).getContents());
+                }
+                list.add(obj);
+            }
+            wb.close();
+        } catch (Exception e) {
+            throw new Exception("转换xls出错:" + e.getMessage());
+        }
+        return list;
+    }
+
+    /**
      * 跟对象obj的某个field赋值value
      *
      * @param obj       属性对象
@@ -94,39 +127,42 @@ public class EasyXls {
      */
     private static void setValue(Object obj, String fieldName, String type, String value) throws Exception {
         Object val = null;
-        /**
-         * 对类型进行转换，支持int,long,float,double,boolean,Integer,Long,Double,Float,Date,String
-         */
-        if (type.equals("int")) {
-            val = Integer.parseInt(value);
-        } else if (type.equals("long")) {
-            val = Long.parseLong(value);
-        } else if (type.equals("float")) {
-            val = Float.parseFloat(value);
-        } else if (type.equals("double")) {
-            val = Double.parseDouble(value);
-        } else if (type.equals("boolean")) {
-            val = Boolean.parseBoolean(value);
-        } else {
-            Class clazz = Class.forName(type);
-            if (!clazz.equals(String.class)) {
-                if (clazz.equals(Date.class)) {
-                    val = DateUtil.smartFormat(value);
-                } else if (clazz.equals(Integer.class)) {
-                    val = Integer.valueOf(value);
-                } else if (clazz.equals(Long.class)) {
-                    val = Long.valueOf(value);
-                } else if (clazz.equals(Float.class)) {
-                    val = Float.valueOf(value);
-                } else if (clazz.equals(Double.class)) {
-                    val = Double.valueOf(value);
-                } else if (clazz.equals(Boolean.class)) {
-                    val = Boolean.valueOf(value);
-                } else if (clazz.equals(BigDecimal.class)) {
-                    val = new BigDecimal(value);
-                }
+        if (value != null) {
+            value = value.trim();
+            /**
+             * 对类型进行转换，支持int,long,float,double,boolean,Integer,Long,Double,Float,Date,String
+             */
+            if (type.equals("int")) {
+                val = Integer.parseInt(value);
+            } else if (type.equals("long")) {
+                val = Long.parseLong(value);
+            } else if (type.equals("float")) {
+                val = Float.parseFloat(value);
+            } else if (type.equals("double")) {
+                val = Double.parseDouble(value);
+            } else if (type.equals("boolean")) {
+                val = Boolean.parseBoolean(value);
             } else {
-                val = value;
+                Class clazz = Class.forName(type);
+                if (!clazz.equals(String.class)) {
+                    if (clazz.equals(Date.class)) {
+                        val = DateUtil.smartFormat(value);
+                    } else if (clazz.equals(Integer.class)) {
+                        val = Integer.valueOf(value);
+                    } else if (clazz.equals(Long.class)) {
+                        val = Long.valueOf(value);
+                    } else if (clazz.equals(Float.class)) {
+                        val = Float.valueOf(value);
+                    } else if (clazz.equals(Double.class)) {
+                        val = Double.valueOf(value);
+                    } else if (clazz.equals(Boolean.class)) {
+                        val = Boolean.valueOf(value);
+                    } else if (clazz.equals(BigDecimal.class)) {
+                        val = new BigDecimal(value);
+                    }
+                } else {
+                    val = value;
+                }
             }
         }
         Field field = getField(obj, fieldName);

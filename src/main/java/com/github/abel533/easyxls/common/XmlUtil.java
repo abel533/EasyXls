@@ -1,7 +1,6 @@
 package com.github.abel533.easyxls.common;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
@@ -25,11 +24,11 @@ public class XmlUtil {
         BufferedReader reader = null;
         StringBuilder sb = null;
         try {
-            reader = new BufferedReader(new FileReader(xmlPath));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlPath), "utf8"));
             String line = null;
             sb = new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                sb.append(line);
+                sb.append(line + "\n");
             }
         } catch (Exception e) {
             return null;
@@ -64,7 +63,7 @@ public class XmlUtil {
             jc = JAXBContext.newInstance(type);
             u = jc.createUnmarshaller();
             object = (T) u.unmarshal(new ByteArrayInputStream(xml.getBytes()));
-        } catch (JAXBException e) {
+        } catch (Exception e) {
             return null;
         }
         return object;
@@ -85,6 +84,8 @@ public class XmlUtil {
         try {
             jc = JAXBContext.newInstance(object.getClass());
             m = jc.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            m.setProperty(Marshaller.JAXB_ENCODING, "GBK");
             m.marshal(object, xml);
             return true;
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class XmlUtil {
             m = jc.createMarshaller();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             m.marshal(object, bos);
-            xml = new String(bos.toByteArray(), "utf8");
+            xml = new String(bos.toByteArray());
         } catch (Exception e) {
             return null;
         }
