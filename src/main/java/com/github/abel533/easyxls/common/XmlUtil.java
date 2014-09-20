@@ -11,6 +11,7 @@ import java.io.*;
  * @author liuzh
  */
 public class XmlUtil {
+    private static final String ENCODING = "GBK";
 
     /**
      * 从xml文件构建
@@ -24,7 +25,7 @@ public class XmlUtil {
         BufferedReader reader = null;
         StringBuilder sb = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlPath), "utf8"));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(xmlPath), ENCODING));
             String line = null;
             sb = new StringBuilder();
             while ((line = reader.readLine()) != null) {
@@ -62,7 +63,7 @@ public class XmlUtil {
         try {
             jc = JAXBContext.newInstance(type);
             u = jc.createUnmarshaller();
-            object = (T) u.unmarshal(new ByteArrayInputStream(xml.getBytes()));
+            object = (T) u.unmarshal(new ByteArrayInputStream(xml.getBytes(ENCODING)));
         } catch (Exception e) {
             return null;
         }
@@ -85,7 +86,7 @@ public class XmlUtil {
             jc = JAXBContext.newInstance(object.getClass());
             m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            m.setProperty(Marshaller.JAXB_ENCODING, "GBK");
+            m.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
             m.marshal(object, xml);
             return true;
         } catch (Exception e) {
