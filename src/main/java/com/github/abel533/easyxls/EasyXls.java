@@ -144,9 +144,9 @@ public class EasyXls {
             value = ((DateCell) cell).getDate();
         } else if (cell instanceof BooleanCell) {
             value = ((BooleanCell) cell).getValue();
-        } else if (cell instanceof FormulaCell) {
+        } /*else if (cell instanceof FormulaCell) {
             value = ((FormulaCell) cell).getFormula();
-        } else {
+        }*/ else {
             value = cell.getContents();
         }
         return value;

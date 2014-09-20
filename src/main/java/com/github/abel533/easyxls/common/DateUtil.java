@@ -65,34 +65,35 @@ public class DateUtil {
             if (text == null || text.length() == 0) {
                 date = null;
             } else {
+                int length = text.length();
                 if (text.indexOf("-") > 0) {
-                    if (text.length() == 10) {
+                    if (length == 10) {
                         date = formatStringToDate(text, Y_M_D);
-                    } else if (text.length() == 16) {
+                    } else if (length == 16) {
                         date = formatStringToDate(text, Y_M_D_HM);
-                    } else if (text.length() == 19) {
+                    } else if (length == 19) {
                         date = formatStringToDate(text, Y_M_D_HMS);
                     } else {
                         throw new IllegalArgumentException("日期长度不符合要求!");
                     }
                 } else if (text.indexOf("/") > 0) {
-                    if (text.length() == 10) {
+                    if (length == 10) {
                         date = formatStringToDate(text, ymd);
-                    } else if (text.length() == 16) {
+                    } else if (length == 16) {
                         date = formatStringToDate(text, ymd_HM);
-                    } else if (text.length() == 19) {
+                    } else if (length == 19) {
                         date = formatStringToDate(text, ymd_HMS);
                     } else {
                         throw new IllegalArgumentException("日期长度不符合要求!");
                     }
                 } else {
-                    if (text.length() == 10) {
+                    if (length == 10) {
                         date = formatStringToDate(text, YMD);
-                    } else if (text.length() == 13) {
+                    } else if (length == 13) {
                         date = new Date(Long.parseLong(text));
-                    } else if (text.length() == 16) {
+                    } else if (length == 16) {
                         date = formatStringToDate(text, YMDHM);
-                    } else if (text.length() == 19) {
+                    } else if (length == 19) {
                         date = formatStringToDate(text, YMDHMS);
                     } else {
                         throw new IllegalArgumentException("日期长度不符合要求!");
