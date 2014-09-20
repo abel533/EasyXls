@@ -62,6 +62,7 @@ public class DateUtil {
     public static Date smartFormat(String text) {
         Date date = null;
         try {
+            int count = repeatCount(text, '-');
             if (text == null || text.length() == 0) {
                 date = null;
             } else if (text.length() == 10) {
@@ -72,13 +73,37 @@ public class DateUtil {
                 date = formatStringToDate(text, Y_M_D_HM);
             } else if (text.length() == 19) {
                 date = formatStringToDate(text, Y_M_D_HMS);
+            } else if (count == 2) {
+                date = formatStringToDate(text, Y_M_D);
+            } else if (count == 3) {
+                date = formatStringToDate(text, Y_M_D_HM);
             } else {
                 throw new IllegalArgumentException("日期长度不符合要求!");
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("日期转换失败!");
+            throw new IllegalArgumentException("日期格式错误!");
         }
         return date;
+    }
+
+    /**
+     * 获取某个字符出现的次数
+     *
+     * @param str
+     * @param c
+     * @return
+     */
+    public static int repeatCount(String str, char c) {
+        if (str == null || str.equals("")) {
+            return 0;
+        }
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == c) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**

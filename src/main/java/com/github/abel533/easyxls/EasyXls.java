@@ -1,6 +1,6 @@
 package com.github.abel533.easyxls;
 
-import com.github.abel533.easyxls.bean.DlExcel;
+import com.github.abel533.easyxls.bean.EasyExcel;
 import com.github.abel533.easyxls.common.DateUtil;
 import com.github.abel533.easyxls.common.XmlConfig;
 import com.github.abel533.easyxls.generater.GenXml;
@@ -23,7 +23,7 @@ import java.util.*;
 public class EasyXls {
 
     public static final String EXCEL = ".xls";
-    private static Map<String, DlExcel> cache = new HashMap<String, DlExcel>();
+    private static Map<String, EasyExcel> cache = new HashMap<String, EasyExcel>();
 
     /**
      * 获取xml配置对象
@@ -31,8 +31,8 @@ public class EasyXls {
      * @param xmlPath xml完整路径
      * @return xml配置对象
      */
-    private static DlExcel getDlExcel(String xmlPath) {
-        DlExcel dlExcel = cache.get(xmlPath);
+    private static EasyExcel getEasyExcel(String xmlPath) {
+        EasyExcel dlExcel = cache.get(xmlPath);
         if (dlExcel == null) {
             dlExcel = XmlConfig.getXmlConfig(xmlPath);
         }
@@ -64,7 +64,7 @@ public class EasyXls {
         List<Object> list = new ArrayList<Object>();
         try {
             //获取配置文件
-            DlExcel config = getDlExcel(xmlPath);
+            EasyExcel config = getEasyExcel(xmlPath);
             String[] names = config.getNames();
             String[] types = config.getTypes();
 
@@ -96,7 +96,7 @@ public class EasyXls {
         List<Object> list = new ArrayList<Object>();
         try {
             //获取配置文件
-            DlExcel config = getDlExcel(xmlPath);
+            EasyExcel config = getEasyExcel(xmlPath);
             String[] names = config.getNames();
             String[] types = config.getTypes();
 
@@ -212,7 +212,7 @@ public class EasyXls {
             }
         }
         try {
-            DlExcel config = getDlExcel(xmlPath);
+            EasyExcel config = getEasyExcel(xmlPath);
             String[] header = config.getHeaders();
             String[] names = config.getNames();
             String[] values;

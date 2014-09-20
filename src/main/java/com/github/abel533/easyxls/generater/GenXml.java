@@ -39,22 +39,69 @@ public class GenXml extends JFrame {
     private JButton mvT;
     private JButton mvD;
     private JButton reset;
-
+    private boolean hasRead = false;
+    private JLabel label_2;
+    private JLabel lblTitle;
+    private JTextField title;
+    private JLabel lblDescription;
+    private JLabel lblsheet;
+    private JLabel label_3;
+    private JLabel lblSheet;
+    private JLabel label_4;
+    private JCheckBox cache;
+    private JTextField sheet;
+    private JTextField sheetNum;
+    private JTextField startRow;
+    private JSlider sliderSheet;
+    private JSlider sliderRow;
+    private JPanel panel_1;
+    private JPanel panel_2;
+    private JScrollPane scrollPane_1;
+    private String clasz;
     /**
-     * 运行xml生成器
+     * 完成，保存xml
      */
-    public static void run() {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    GenXml frame = new GenXml();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    private ActionListener doneListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EasyExcel dlExcel = new EasyExcel();
+            List<DlColumn> columns = new ArrayList<DlColumn>();
+            dlExcel.setDlColumns(new DlColumns());
+            dlExcel.getDlColumns().setColumns(columns);
+            dlExcel.setClazz(clasz);
+            dlExcel.setCache(cache.isSelected());
+            dlExcel.setDescription(description.getText());
+            dlExcel.setSheet(sheet.getText());
+            dlExcel.setSheetNum(Integer.parseInt(sheetNum.getText()));
+            dlExcel.setStartRow(Integer.parseInt(startRow.getText()));
+            dlExcel.setTitle(title.getText());
+            //列
+            int rows = table.getRowCount();
+            DlColumn column = null;
+            for (int i = 0; i < rows; i++) {
+                column = new DlColumn();
+                column.setName(String.valueOf(table.getValueAt(i, 0)));
+                column.setType(String.valueOf(table.getValueAt(i, 1)));
+                column.setHeader(String.valueOf(table.getValueAt(i, 2)));
+                columns.add(column);
             }
-        });
-    }
+            XmlConfig config = new XmlConfig();
+            //filepath
+            String xmlPath = filePath.getText();
+            String fileName = clasz.substring(clasz.lastIndexOf('.') + 1);
+            String fullPath = xmlPath + "/" + fileName + ".xml";
+            try {
+                config.WriteXml(dlExcel, fullPath);
+                if (JOptionPane.showConfirmDialog(GenXml.this, "保存完成，是否退出向导?", "成功", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                    System.exit(0);
+                }
+            } catch (Exception e2) {
+                JOptionPane.showMessageDialog(GenXml.this, "保存出错：" + e2.getMessage());
+            }
+        }
+    };
+    private JTextArea description;
+    private JTextField filePath;
 
     /**
      * Create the frame.
@@ -350,6 +397,22 @@ public class GenXml extends JFrame {
         step3.add(label_2, BorderLayout.NORTH);
     }
 
+    /**
+     * 运行xml生成器
+     */
+    public static void run() {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    GenXml frame = new GenXml();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     // 处理
     private void next() {
         switch (step) {
@@ -380,71 +443,6 @@ public class GenXml extends JFrame {
                 break;
         }
     }
-
-    /**
-     * 完成，保存xml
-     */
-    private ActionListener doneListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EasyExcel dlExcel = new EasyExcel();
-            List<DlColumn> columns = new ArrayList<DlColumn>();
-            dlExcel.setDlColumns(new DlColumns());
-            dlExcel.getDlColumns().setColumns(columns);
-            dlExcel.setClazz(clasz);
-            dlExcel.setCache(cache.isSelected());
-            dlExcel.setDescription(description.getText());
-            dlExcel.setSheet(sheet.getText());
-            dlExcel.setSheetNum(Integer.parseInt(sheetNum.getText()));
-            dlExcel.setStartRow(Integer.parseInt(startRow.getText()));
-            dlExcel.setTitle(title.getText());
-            //列
-            int rows = table.getRowCount();
-            DlColumn column = null;
-            for (int i = 0; i < rows; i++) {
-                column = new DlColumn();
-                column.setName(String.valueOf(table.getValueAt(i, 0)));
-                column.setType(String.valueOf(table.getValueAt(i, 1)));
-                column.setHeader(String.valueOf(table.getValueAt(i, 2)));
-                columns.add(column);
-            }
-            XmlConfig config = new XmlConfig();
-            //filepath
-            String xmlPath = filePath.getText();
-            String fileName = clasz.substring(clasz.lastIndexOf('.') + 1);
-            String fullPath = xmlPath + "/" + fileName + ".xml";
-            try {
-                config.WriteXml(dlExcel, fullPath);
-                if (JOptionPane.showConfirmDialog(GenXml.this, "保存完成，是否退出向导?", "成功", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                    System.exit(0);
-                }
-            } catch (Exception e2) {
-                JOptionPane.showMessageDialog(GenXml.this, "保存出错：" + e2.getMessage());
-            }
-        }
-    };
-
-    private boolean hasRead = false;
-    private JLabel label_2;
-    private JLabel lblTitle;
-    private JTextField title;
-    private JLabel lblDescription;
-    private JLabel lblsheet;
-    private JLabel label_3;
-    private JLabel lblSheet;
-    private JLabel label_4;
-    private JCheckBox cache;
-    private JTextField sheet;
-    private JTextField sheetNum;
-    private JTextField startRow;
-    private JSlider sliderSheet;
-    private JSlider sliderRow;
-    private JPanel panel_1;
-    private JPanel panel_2;
-    private JScrollPane scrollPane_1;
-    private String clasz;
-    private JTextArea description;
-    private JTextField filePath;
 
     private void next0() {
         prevBtn.setEnabled(true);
