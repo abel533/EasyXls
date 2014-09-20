@@ -2,7 +2,7 @@ package com.github.abel533.easyxls.generater;
 
 import com.github.abel533.easyxls.bean.DlColumn;
 import com.github.abel533.easyxls.bean.DlColumns;
-import com.github.abel533.easyxls.bean.DlExcel;
+import com.github.abel533.easyxls.bean.EasyExcel;
 import com.github.abel533.easyxls.common.XmlConfig;
 
 import javax.swing.*;
@@ -387,7 +387,7 @@ public class GenXml extends JFrame {
     private ActionListener doneListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            DlExcel dlExcel = new DlExcel();
+            EasyExcel dlExcel = new EasyExcel();
             List<DlColumn> columns = new ArrayList<DlColumn>();
             dlExcel.setDlColumns(new DlColumns());
             dlExcel.getDlColumns().setColumns(columns);

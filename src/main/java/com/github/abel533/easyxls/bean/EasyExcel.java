@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "excel")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DlExcel {
+public class EasyExcel {
     /**
      * 是否缓存-启用缓存后，修改配置不会实时更新
      */
