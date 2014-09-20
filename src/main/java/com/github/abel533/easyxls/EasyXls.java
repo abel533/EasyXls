@@ -127,7 +127,7 @@ public class EasyXls {
      */
     private static void setValue(Object obj, String fieldName, String type, String value) throws Exception {
         Object val = null;
-        if (value != null) {
+        if (value != null && !value.trim().equals("")) {
             value = value.trim();
             /**
              * 对类型进行转换，支持int,long,float,double,boolean,Integer,Long,Double,Float,Date,String
