@@ -4,8 +4,7 @@ import com.github.abel533.easyxls.bean.EasyExcel;
 import com.github.abel533.easyxls.common.DateUtil;
 import com.github.abel533.easyxls.common.XmlConfig;
 import com.github.abel533.easyxls.generater.GenXml;
-import jxl.Sheet;
-import jxl.Workbook;
+import jxl.*;
 import jxl.write.*;
 
 import java.io.File;
@@ -32,17 +31,17 @@ public class EasyXls {
      * @return xml配置对象
      */
     private static EasyExcel getEasyExcel(String xmlPath) {
-        EasyExcel dlExcel = cache.get(xmlPath);
-        if (dlExcel == null) {
-            dlExcel = XmlConfig.getXmlConfig(xmlPath);
+        EasyExcel easyExcel = cache.get(xmlPath);
+        if (easyExcel == null) {
+            easyExcel = XmlConfig.getXmlConfig(xmlPath);
         }
-        if (dlExcel == null) {
+        if (easyExcel == null) {
             throw new RuntimeException("获取xml配置文件出错!");
         }
-        if (dlExcel.getCache() == null || dlExcel.getCache()) {
-            cache.put(xmlPath, dlExcel);
+        if (easyExcel.getCache() == null || easyExcel.getCache()) {
+            cache.put(xmlPath, easyExcel);
         }
-        return dlExcel;
+        return easyExcel;
     }
 
     /**
@@ -61,25 +60,17 @@ public class EasyXls {
      * @throws Exception
      */
     public static List<?> xls2List(String xmlPath, File xlsFile) throws Exception {
-        List<Object> list = new ArrayList<Object>();
+        Workbook wb = null;
+        List<?> list = null;
         try {
-            //获取配置文件
-            EasyExcel config = getEasyExcel(xmlPath);
-            String[] names = config.getNames();
-            String[] types = config.getTypes();
-
-            Workbook wb = Workbook.getWorkbook(xlsFile);
-            Sheet sheet = wb.getSheet(config.getSheetNum());
-
-            for (int i = config.getStartRow(); i < sheet.getRows(); i++) {
-                Object obj = Class.forName(config.getClazz()).newInstance();
-                for (int j = 0; j < sheet.getColumns(); j++) {
-                    setValue(obj, names[j], types[j], sheet.getCell(j, i).getContents());
-                }
-                list.add(obj);
-            }
+            wb = Workbook.getWorkbook(xlsFile);
+            list = workbook2List(xmlPath, wb);
         } catch (Exception e) {
             throw new Exception("转换xls出错:" + e.getMessage());
+        } finally {
+            if (wb != null) {
+                wb.close();
+            }
         }
         return list;
     }
@@ -93,28 +84,72 @@ public class EasyXls {
      * @throws Exception
      */
     public static List<?> xls2List(String xmlPath, InputStream inputStream) throws Exception {
-        List<Object> list = new ArrayList<Object>();
+        Workbook wb = null;
+        List<?> list = null;
         try {
-            //获取配置文件
-            EasyExcel config = getEasyExcel(xmlPath);
-            String[] names = config.getNames();
-            String[] types = config.getTypes();
-
-            Workbook wb = Workbook.getWorkbook(inputStream);
-            Sheet sheet = wb.getSheet(config.getSheetNum());
-
-            for (int i = config.getStartRow(); i < sheet.getRows(); i++) {
-                Object obj = Class.forName(config.getClazz()).newInstance();
-                for (int j = 0; j < sheet.getColumns(); j++) {
-                    setValue(obj, names[j], types[j], sheet.getCell(j, i).getContents());
-                }
-                list.add(obj);
-            }
-            wb.close();
+            wb = Workbook.getWorkbook(inputStream);
+            list = workbook2List(xmlPath, wb);
         } catch (Exception e) {
             throw new Exception("转换xls出错:" + e.getMessage());
+        } finally {
+            if (wb != null) {
+                wb.close();
+            }
         }
         return list;
+    }
+
+    /**
+     * workbook转换为list
+     *
+     * @param xmlPath
+     * @param wb
+     * @return
+     * @throws Exception
+     */
+    public static List<?> workbook2List(String xmlPath, Workbook wb) throws Exception {
+        //获取配置文件
+        EasyExcel config = getEasyExcel(xmlPath);
+        String[] names = config.getNames();
+        String[] types = config.getTypes();
+
+        List<Object> list = new ArrayList<Object>();
+        Sheet sheet = wb.getSheet(config.getSheetNum());
+        for (int i = config.getStartRow(); i < sheet.getRows(); i++) {
+            Object obj = Class.forName(config.getClazz()).newInstance();
+            for (int j = 0; j < names.length; j++) {
+                setValue(obj, names[j], types[j], sheet.getCell(j, i));
+            }
+            list.add(obj);
+        }
+        return list;
+    }
+
+    /**
+     * 获取单元格的数据
+     *
+     * @param cell
+     * @return
+     * @throws Exception
+     */
+    private static Object getCellValue(Cell cell) throws Exception {
+        Object value = null;
+        if (cell instanceof ErrorCell) {
+            value = null;
+        } else if (cell instanceof LabelCell) {
+            value = ((LabelCell) cell).getString();
+        } else if (cell instanceof NumberCell) {
+            value = ((NumberCell) cell).getValue();
+        } else if (cell instanceof DateCell) {
+            value = ((DateCell) cell).getDate();
+        } else if (cell instanceof BooleanCell) {
+            value = ((BooleanCell) cell).getValue();
+        } else if (cell instanceof FormulaCell) {
+            value = ((FormulaCell) cell).getFormula();
+        } else {
+            value = cell.getContents();
+        }
+        return value;
     }
 
     /**
@@ -122,46 +157,56 @@ public class EasyXls {
      *
      * @param obj       属性对象
      * @param fieldName 字段名
-     * @param value     字段值
+     * @param cell      单元格
      * @throws Exception
      */
-    private static void setValue(Object obj, String fieldName, String type, String value) throws Exception {
+    private static void setValue(Object obj, String fieldName, String type, Cell cell) throws Exception {
         Object val = null;
-        if (value != null && !value.trim().equals("")) {
-            value = value.trim();
-            /**
-             * 对类型进行转换，支持int,long,float,double,boolean,Integer,Long,Double,Float,Date,String
-             */
-            if (type.equals("int")) {
-                val = Integer.parseInt(value);
-            } else if (type.equals("long")) {
-                val = Long.parseLong(value);
-            } else if (type.equals("float")) {
-                val = Float.parseFloat(value);
-            } else if (type.equals("double")) {
-                val = Double.parseDouble(value);
-            } else if (type.equals("boolean")) {
-                val = Boolean.parseBoolean(value);
-            } else {
-                Class clazz = Class.forName(type);
-                if (!clazz.equals(String.class)) {
-                    if (clazz.equals(Date.class)) {
-                        val = DateUtil.smartFormat(value);
-                    } else if (clazz.equals(Integer.class)) {
-                        val = Integer.valueOf(value);
-                    } else if (clazz.equals(Long.class)) {
-                        val = Long.valueOf(value);
-                    } else if (clazz.equals(Float.class)) {
-                        val = Float.valueOf(value);
-                    } else if (clazz.equals(Double.class)) {
-                        val = Double.valueOf(value);
-                    } else if (clazz.equals(Boolean.class)) {
-                        val = Boolean.valueOf(value);
-                    } else if (clazz.equals(BigDecimal.class)) {
-                        val = new BigDecimal(value);
-                    }
+        Object v = getCellValue(cell);
+        if (v == null) {
+            //不处理
+        } else if (v.getClass().getName().equals(type)) {
+            //类型一致的直接使用
+            val = v;
+        } else {
+            //类型不一致进行转换
+            String value = v.toString();
+            if (value != null && !value.trim().equals("")) {
+                value = value.trim();
+                /**
+                 * 对类型进行转换，支持int,long,float,double,boolean,Integer,Long,Double,Float,Date,String
+                 */
+                if (type.equals("int")) {
+                    val = new BigDecimal(value).intValue();
+                } else if (type.equals("long")) {
+                    val = new BigDecimal(value).longValue();
+                } else if (type.equals("float")) {
+                    val = new BigDecimal(value).floatValue();
+                } else if (type.equals("double")) {
+                    val = new BigDecimal(value).doubleValue();
+                } else if (type.equals("boolean")) {
+                    val = Boolean.parseBoolean(value);
                 } else {
-                    val = value;
+                    Class clazz = Class.forName(type);
+                    if (!clazz.equals(String.class)) {
+                        if (clazz.equals(Date.class)) {
+                            val = DateUtil.smartFormat(value);
+                        } else if (clazz.equals(Integer.class)) {
+                            val = new BigDecimal(value).intValue();
+                        } else if (clazz.equals(Long.class)) {
+                            val = new BigDecimal(value).longValue();
+                        } else if (clazz.equals(Float.class)) {
+                            val = new BigDecimal(value).floatValue();
+                        } else if (clazz.equals(Double.class)) {
+                            val = new BigDecimal(value).doubleValue();
+                        } else if (clazz.equals(Boolean.class)) {
+                            val = Boolean.parseBoolean(value);
+                        } else if (clazz.equals(BigDecimal.class)) {
+                            val = new BigDecimal(value);
+                        }
+                    } else {
+                        val = value;
+                    }
                 }
             }
         }
@@ -178,7 +223,7 @@ public class EasyXls {
      * @param fieldName 字段名
      * @return 返回字段对象
      */
-    private static Field getField(Object source, String fieldName) {
+    public static Field getField(Object source, String fieldName) {
         Field field = null;
         Class clazz = source.getClass();
         while (field == null && clazz != null) {
