@@ -115,9 +115,10 @@ public class EasyXls {
 
         List<Object> list = new ArrayList<Object>();
         Sheet sheet = wb.getSheet(config.getSheetNum());
+        int length = sheet.getColumns() < names.length ? sheet.getColumns() : names.length;
         for (int i = config.getStartRow(); i < sheet.getRows(); i++) {
             Object obj = Class.forName(config.getClazz()).newInstance();
-            for (int j = 0; j < names.length; j++) {
+            for (int j = 0; j < length; j++) {
                 setValue(obj, names[j], types[j], sheet.getCell(j, i));
             }
             list.add(obj);
