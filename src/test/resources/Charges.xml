@@ -9,13 +9,11 @@
     <column>
       <name>year</name>
       <header>年度</header>
-      <type>java.lang.Integer</type>
       <width>50</width>
     </column>
     <column>
       <name>communityid</name>
       <header>小区ID</header>
-      <type>java.lang.Integer</type>
       <width>0</width>
     </column>
     <column>

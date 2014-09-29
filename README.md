@@ -45,7 +45,38 @@ EasyXls.openGenerater();
   <artifactId>jxl</artifactId>
   <version>2.6.12</version>
 </dependency>
-```
+```  
+
+##配置项说明  
+
+有一些属性只在写入到xls时有效，这些会标记【写】，有些只在读取xls时使用的标记【读】，通用的不做标记。
+
+###整体配置  
+
+- cache:使用xml配置时可以选择是否启用缓存，启用缓存后不会重复解析xml配置文件，这样会提高反复使用的效率。但是如果修改了xml配置，新的配置不会生效。
+
+- sheet:sheet标签的名字【写】
+
+- class:excel对于的POJO类或Map
+
+- sheetNum:读取第几个sheet页【读】
+
+- startRow:从第几行开始读取【读】
+
+- maxRow:最大读取行，超出行数的不进行读取【读】   
+
+###列Column配置
+
+- name:对应的java字段名
+
+- header:对应的excel标题名【写】
+
+- type:对应列的类型，不设置时，如果使用的POJO，会自动匹配字段类型。如果使用的Map，使用xls自身的格式【读】  
+
+- width:对应列的宽度（单位：像素）【写】
+
+- key:必须包含值的列，如果该列为空，就会停止往下读取。主要防止读取空白行，只有第一个设置key=true的列有效【读】   
+
 
 ##示例
 
@@ -67,6 +98,12 @@ EasyXls.openGenerater();
       <header>年度</header>
       <type>java.lang.Integer</type>
       <width>50</width>
+    </column>
+    <column>
+      <name>ownersname</name>
+      <header>户主姓名</header>
+      <type>java.lang.String</type>
+      <width>120</width>
     </column>
   </columns>
 </excel>

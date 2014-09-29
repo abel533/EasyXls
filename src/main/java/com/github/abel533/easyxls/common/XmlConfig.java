@@ -2,6 +2,7 @@ package com.github.abel533.easyxls.common;
 
 
 import com.github.abel533.easyxls.bean.ExcelConfig;
+import com.github.abel533.easyxls.bean.Field;
 
 import java.io.File;
 
@@ -19,7 +20,20 @@ public class XmlConfig {
      * @return xml配置对象
      */
     public static ExcelConfig getXmlConfig(String xmlPath) {
-        return XmlUtil.fromXml(new File(xmlPath), ExcelConfig.class);
+        ExcelConfig config = XmlUtil.fromXml(new File(xmlPath), ExcelConfig.class);
+        try {
+            Class clazz = Class.forName(config.getClazz());
+            //自动补充没有填写type的列
+            for (int i = 0; i < config.getColumns().getColumns().size(); i++) {
+                if (config.getColumn(i).getType() == null || config.getColumn(i).getType().equals("")) {
+                    Field field = FieldUtil.getField(clazz, config.getColumn(i).getName());
+                    config.getColumn(i).setType(field.getCanonicalName());
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            //ignore
+        }
+        return config;
     }
 
     /**

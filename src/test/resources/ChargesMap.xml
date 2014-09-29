@@ -2,14 +2,13 @@
 <excel>
   <cache>false</cache>
   <sheet>一次性费用</sheet>
-  <class>java.util.HashMap</class>
+  <class>java.util.Map</class>
   <sheetNum>0</sheetNum>
   <startRow>1</startRow>
   <columns>
     <column>
       <name>year</name>
       <header>年度</header>
-      <type>java.lang.Integer</type>
       <width>50</width>
     </column>
     <column>
