@@ -45,6 +45,7 @@ EasyXls.openGenerater();
   <artifactId>jxl</artifactId>
   <version>2.6.12</version>
 </dependency>
+```
 
 ##示例
 
