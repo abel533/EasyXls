@@ -181,8 +181,10 @@ public void testMap2() {
 }
 ```  
 
-这里为了调用方法，使用了`.separater(",")`设定分隔符（默认为英文逗号），然后在`addColumn`方法中使用如`"year,年度"`这种方式赋值。  
+这里为了调用方便，先使用`.separater(",")`方法设定分隔符（默认为英文逗号），然后在`addColumn`方法中使用如`"year,年度"`这种方式赋值。  
 
-这种赋值方式最多支持4个参数，分别对应name,header,width,column，如：  
+这种赋值方式最多支持4个参数，分别对应name,header,width,type，如：  
 
 >"year,年度,200,java.lang.Integer"  
+
+使用POJO类时不需要写type，当使用Map类型时，使用type限定类型。  
