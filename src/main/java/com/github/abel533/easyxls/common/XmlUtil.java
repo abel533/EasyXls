@@ -1,6 +1,7 @@
 package com.github.abel533.easyxls.common;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
@@ -31,8 +32,10 @@ public class XmlUtil {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException(e);
         } finally {
             if (reader != null) {
                 try {
@@ -64,8 +67,10 @@ public class XmlUtil {
             jc = JAXBContext.newInstance(type);
             u = jc.createUnmarshaller();
             object = (T) u.unmarshal(new ByteArrayInputStream(xml.getBytes(ENCODING)));
-        } catch (Exception e) {
-            return null;
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
         return object;
     }
@@ -78,7 +83,7 @@ public class XmlUtil {
      */
     public static boolean toXml(Object object, File xml) {
         if (object == null) {
-            return false;
+            throw new NullPointerException("object对象不存在!");
         }
         JAXBContext jc = null;
         Marshaller m = null;
@@ -90,7 +95,7 @@ public class XmlUtil {
             m.marshal(object, xml);
             return true;
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -102,7 +107,7 @@ public class XmlUtil {
      */
     public static String toXml(Object object) {
         if (object == null) {
-            return null;
+            throw new NullPointerException("object对象不存在!");
         }
         JAXBContext jc = null;
         Marshaller m = null;
@@ -114,7 +119,7 @@ public class XmlUtil {
             m.marshal(object, bos);
             xml = new String(bos.toByteArray());
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException(e);
         }
         return xml;
     }

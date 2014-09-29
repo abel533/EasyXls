@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="GBK" standalone="yes"?>
 <excel>
   <cache>false</cache>
-  <title></title>
-  <description></description>
   <sheet>一次性费用</sheet>
   <class>po.Charges</class>
   <sheetNum>0</sheetNum>

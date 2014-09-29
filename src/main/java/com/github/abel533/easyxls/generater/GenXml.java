@@ -2,7 +2,7 @@ package com.github.abel533.easyxls.generater;
 
 import com.github.abel533.easyxls.bean.Column;
 import com.github.abel533.easyxls.bean.Columns;
-import com.github.abel533.easyxls.bean.EasyExcel;
+import com.github.abel533.easyxls.bean.ExcelConfig;
 import com.github.abel533.easyxls.common.XmlConfig;
 
 import javax.swing.*;
@@ -41,9 +41,6 @@ public class GenXml extends JFrame {
     private JButton reset;
     private boolean hasRead = false;
     private JLabel label_2;
-    private JLabel lblTitle;
-    private JTextField title;
-    private JLabel lblDescription;
     private JLabel lblsheet;
     private JLabel label_3;
     private JLabel lblSheet;
@@ -64,17 +61,15 @@ public class GenXml extends JFrame {
     private ActionListener doneListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EasyExcel dlExcel = new EasyExcel();
+            ExcelConfig dlExcel = new ExcelConfig();
             List<Column> columns = new ArrayList<Column>();
-            dlExcel.setDlColumns(new Columns());
-            dlExcel.getDlColumns().setColumns(columns);
+            dlExcel.setColumns(new Columns());
+            dlExcel.getColumns().setColumns(columns);
             dlExcel.setClazz(clasz);
             dlExcel.setCache(cache.isSelected());
-            dlExcel.setDescription(description.getText());
             dlExcel.setSheet(sheet.getText());
             dlExcel.setSheetNum(Integer.parseInt(sheetNum.getText()));
             dlExcel.setStartRow(Integer.parseInt(startRow.getText()));
-            dlExcel.setTitle(title.getText());
             //列
             int rows = table.getRowCount();
             Column column = null;
@@ -100,7 +95,6 @@ public class GenXml extends JFrame {
             }
         }
     };
-    private JTextArea description;
     private JTextField filePath;
 
     /**
@@ -304,19 +298,6 @@ public class GenXml extends JFrame {
         step3.add(panel);
         panel.setLayout(null);
 
-        lblTitle = new JLabel("标题：");
-        lblTitle.setBounds(106, 28, 99, 15);
-        panel.add(lblTitle);
-
-        title = new JTextField();
-        title.setBounds(215, 21, 312, 30);
-        panel.add(title);
-        title.setColumns(10);
-
-        lblDescription = new JLabel("描述：");
-        lblDescription.setBounds(106, 56, 99, 24);
-        panel.add(lblDescription);
-
         lblsheet = new JLabel("sheet序号：");
         lblsheet.setBounds(106, 226, 99, 15);
         panel.add(lblsheet);
@@ -383,14 +364,6 @@ public class GenXml extends JFrame {
         sliderSheet.setMaximum(10);
         sliderSheet.setBounds(215, 219, 240, 30);
         panel.add(sliderSheet);
-
-        scrollPane_1 = new JScrollPane();
-        scrollPane_1.setBounds(215, 56, 312, 124);
-        panel.add(scrollPane_1);
-
-        description = new JTextArea();
-        description.setText("对导出文件的描述信息，会显示在excel中。\n为空时不输出！");
-        scrollPane_1.setViewportView(description);
 
         label_2 = new JLabel("           基本信息：");
         label_2.setPreferredSize(new Dimension(60, 35));

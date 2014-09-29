@@ -9,9 +9,37 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Column {
     private String name;
     private String header;
-    private String width;
+    private Integer width;
     private String type;
+    //一个配置中只有第一个key能起作用
     private Boolean key = Boolean.FALSE;
+
+    public Column() {
+    }
+
+    public Column(String name, String header) {
+        this.name = name;
+        this.header = header;
+    }
+
+    public Column(String name, String header, Integer width) {
+        this.name = name;
+        this.header = header;
+        this.width = width;
+    }
+
+    public Column(String name, String header, Boolean key) {
+        this.name = name;
+        this.header = header;
+        this.key = key;
+    }
+
+    public Column(String name, String header, Integer width, Boolean key) {
+        this.name = name;
+        this.header = header;
+        this.width = width;
+        this.key = key;
+    }
 
     public String getType() {
         return type;
@@ -21,11 +49,11 @@ public class Column {
         this.type = type;
     }
 
-    public String getWidth() {
+    public Integer getWidth() {
         return width;
     }
 
-    public void setWidth(String width) {
+    public void setWidth(Integer width) {
         this.width = width;
     }
 
