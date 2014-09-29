@@ -4,17 +4,17 @@
 
 ##EasyXls特点
 
-1. 支持xls转换为List<Pojo>对象
+1. 支持xls转换为`List<Pojo>`对象
 
-2. 支持xls转换为List<Map>对象
+2. 支持xls转换为`List<Map>`对象
 
-3. 支持List<Pojo>转换为xls
+3. 支持`List<Pojo>`转换为xls
 
-4. 支持List<Map>转换为xls
+4. 支持`List<Map>`转换为xls
 
 5. 支持xml配置形式
 
-6. 支持java编码创建Config配置
+6. 支持java编码创建`Config`配置
 
 
 ##xml配置向导
