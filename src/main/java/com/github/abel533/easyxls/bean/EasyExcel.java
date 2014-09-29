@@ -1,9 +1,12 @@
 package com.github.abel533.easyxls.bean;
 
+import com.github.abel533.easyxls.EasyXls;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.reflect.Field;
 
 /**
  * xml对象
@@ -44,7 +47,7 @@ public class EasyExcel {
     private int startRow;
 
     @XmlElement(name = "columns")
-    private DlColumns dlColumns;
+    private Columns dlColumns;
 
     public Boolean getCache() {
         return cache;
@@ -102,11 +105,11 @@ public class EasyExcel {
         this.sheet = sheet;
     }
 
-    public DlColumns getDlColumns() {
+    public Columns getDlColumns() {
         return dlColumns;
     }
 
-    public void setDlColumns(DlColumns dlColumns) {
+    public void setDlColumns(Columns dlColumns) {
         this.dlColumns = dlColumns;
     }
 
@@ -117,7 +120,7 @@ public class EasyExcel {
      */
     public String[] getHeaders() {
         String[] headers = new String[dlColumns.getColumns().size()];
-        DlColumn column = null;
+        Column column = null;
         for (int i = 0; i < dlColumns.getColumns().size(); i++) {
             column = dlColumns.getColumns().get(i);
             if (column.getHeader() != null && !column.getHeader().equals("")) {
@@ -153,6 +156,32 @@ public class EasyExcel {
             types[i] = dlColumns.getColumns().get(i).getType();
         }
         return types;
+    }
+
+    /**
+     * 获取key值
+     *
+     * @return
+     */
+    public Field getKey() {
+        String keyName = null;
+        for (int i = 0; i < dlColumns.getColumns().size(); i++) {
+            if (dlColumns.getColumns().get(i).getKey()) {
+                keyName = dlColumns.getColumns().get(i).getName();
+                break;
+            }
+        }
+        if (keyName != null && !keyName.equals("")) {
+            try {
+                Field field = EasyXls.getField(Class.forName(clazz), keyName);
+                field.setAccessible(true);
+                return field;
+            } catch (Exception e) {
+                //ignore
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 }

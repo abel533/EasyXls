@@ -6,11 +6,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "column")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DlColumn {
+public class Column {
     private String name;
     private String header;
     private String width;
     private String type;
+    private Boolean key = Boolean.FALSE;
 
     public String getType() {
         return type;
@@ -44,5 +45,11 @@ public class DlColumn {
         this.header = header;
     }
 
+    public Boolean getKey() {
+        return key;
+    }
 
+    public void setKey(Boolean key) {
+        this.key = key;
+    }
 }

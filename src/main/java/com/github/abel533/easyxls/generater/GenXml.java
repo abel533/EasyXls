@@ -1,7 +1,7 @@
 package com.github.abel533.easyxls.generater;
 
-import com.github.abel533.easyxls.bean.DlColumn;
-import com.github.abel533.easyxls.bean.DlColumns;
+import com.github.abel533.easyxls.bean.Column;
+import com.github.abel533.easyxls.bean.Columns;
 import com.github.abel533.easyxls.bean.EasyExcel;
 import com.github.abel533.easyxls.common.XmlConfig;
 
@@ -65,8 +65,8 @@ public class GenXml extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             EasyExcel dlExcel = new EasyExcel();
-            List<DlColumn> columns = new ArrayList<DlColumn>();
-            dlExcel.setDlColumns(new DlColumns());
+            List<Column> columns = new ArrayList<Column>();
+            dlExcel.setDlColumns(new Columns());
             dlExcel.getDlColumns().setColumns(columns);
             dlExcel.setClazz(clasz);
             dlExcel.setCache(cache.isSelected());
@@ -77,9 +77,9 @@ public class GenXml extends JFrame {
             dlExcel.setTitle(title.getText());
             //列
             int rows = table.getRowCount();
-            DlColumn column = null;
+            Column column = null;
             for (int i = 0; i < rows; i++) {
-                column = new DlColumn();
+                column = new Column();
                 column.setName(String.valueOf(table.getValueAt(i, 0)));
                 column.setType(String.valueOf(table.getValueAt(i, 1)));
                 column.setHeader(String.valueOf(table.getValueAt(i, 2)));

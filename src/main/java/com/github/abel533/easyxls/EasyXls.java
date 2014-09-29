@@ -112,6 +112,7 @@ public class EasyXls {
         EasyExcel config = getEasyExcel(xmlPath);
         String[] names = config.getNames();
         String[] types = config.getTypes();
+        Field key = config.getKey();
 
         List<Object> list = new ArrayList<Object>();
         Sheet sheet = wb.getSheet(config.getSheetNum());
@@ -120,6 +121,13 @@ public class EasyXls {
             Object obj = Class.forName(config.getClazz()).newInstance();
             for (int j = 0; j < length; j++) {
                 setValue(obj, names[j], types[j], sheet.getCell(j, i));
+            }
+            //checkKey
+            if (key != null) {
+                //当主键为空时，不在继续读取excel
+                if (key.get(obj) == null || "".equals(String.valueOf(key.get(obj)))) {
+                    break;
+                }
             }
             list.add(obj);
         }
@@ -225,8 +233,21 @@ public class EasyXls {
      * @return 返回字段对象
      */
     public static Field getField(Object source, String fieldName) {
+        if (source == null) {
+            return null;
+        }
+        return getField(source.getClass(), fieldName);
+    }
+
+    /**
+     * 获取字段中的Field
+     *
+     * @param clazz     类
+     * @param fieldName 字段名
+     * @return 返回字段对象
+     */
+    public static Field getField(Class clazz, String fieldName) {
         Field field = null;
-        Class clazz = source.getClass();
         while (field == null && clazz != null) {
             try {
                 field = clazz.getDeclaredField(fieldName);

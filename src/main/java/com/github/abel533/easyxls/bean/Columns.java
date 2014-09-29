@@ -8,18 +8,18 @@ import java.util.List;
 
 @XmlRootElement(name = "columns")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DlColumns {
+public class Columns {
     /**
      * 列的配置信息
      */
     @XmlElement(name = "column")
-    private List<DlColumn> columns;
+    private List<Column> columns;
 
-    public List<DlColumn> getColumns() {
+    public List<Column> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<DlColumn> columns) {
+    public void setColumns(List<Column> columns) {
         this.columns = columns;
     }
 }
