@@ -187,4 +187,4 @@ public void testMap2() {
 
 >"year,年度,200,java.lang.Integer"  
 
-使用POJO类时不需要写type，当使用Map类型时，使用type限定类型。  
+使用POJO类时不需要写type，当使用Map时，可以使用type指定类型。  
