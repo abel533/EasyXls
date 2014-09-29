@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -168,7 +167,6 @@ public class ExcelConfig {
         if (keyName != null && !keyName.equals("")) {
             try {
                 Field field = FieldUtil.getField(Class.forName(clazz), keyName);
-                field.setAccessible(true);
                 return field;
             } catch (Exception e) {
                 //ignore
@@ -237,7 +235,7 @@ public class ExcelConfig {
         public Builder addColumn(Column column) {
             if (column.getType() == null || column.getType().equals("")) {
                 Field field = FieldUtil.getField(clazz, column.getName());
-                column.setType(field.getType().getCanonicalName());
+                column.setType(field.getCanonicalName());
             }
             if (key != null && key.equals(column.getName())) {
                 column.setKey(true);

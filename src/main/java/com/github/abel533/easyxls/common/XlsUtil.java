@@ -1,6 +1,7 @@
 package com.github.abel533.easyxls.common;
 
 import com.github.abel533.easyxls.bean.ExcelConfig;
+import com.github.abel533.easyxls.bean.Field;
 import com.github.abel533.easyxls.generater.GenXml;
 import jxl.*;
 import jxl.write.Label;
@@ -9,7 +10,6 @@ import jxl.write.WritableWorkbook;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -237,6 +237,9 @@ public class XlsUtil {
         Object v = getCellValue(cell);
         if (v == null) {
             //不处理
+        } else if (Object.class.getCanonicalName().equals(type)) {
+            //类型一致的直接使用
+            val = v;
         } else if (v.getClass().getName().equals(type)) {
             //类型一致的直接使用
             val = v;

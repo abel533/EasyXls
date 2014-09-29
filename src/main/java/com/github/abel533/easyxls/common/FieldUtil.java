@@ -1,6 +1,9 @@
 package com.github.abel533.easyxls.common;
 
-import java.lang.reflect.Field;
+import com.github.abel533.easyxls.bean.Field;
+import com.github.abel533.easyxls.bean.MapField;
+
+import java.util.Map;
 
 /**
  * @author liuzh
@@ -28,7 +31,10 @@ public class FieldUtil {
      * @return 返回字段对象
      */
     public static Field getField(Class clazz, String fieldName) {
-        Field field = null;
+        if (Map.class.isAssignableFrom(clazz)) {
+            return new Field(new MapField(fieldName));
+        }
+        java.lang.reflect.Field field = null;
         while (field == null && clazz != null) {
             try {
                 field = clazz.getDeclaredField(fieldName);
@@ -37,6 +43,6 @@ public class FieldUtil {
                 clazz = clazz.getSuperclass();
             }
         }
-        return field;
+        return new Field(field);
     }
 }
