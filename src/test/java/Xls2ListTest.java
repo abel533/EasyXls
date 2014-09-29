@@ -1,8 +1,13 @@
 import com.github.abel533.easyxls.EasyXls;
+import com.github.abel533.easyxls.bean.ExcelConfig;
 import org.junit.Test;
+import po.Charges;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liuzh
@@ -11,7 +16,6 @@ public class Xls2ListTest {
 
     @Test
     public void test() {
-
         InputStream is = Xls2ListTest.class.getResourceAsStream("2.xls");
         try {
             List list = EasyXls.xls2List(Xls2ListTest.class.getResource("/Charges.xml").getPath(), is);
@@ -21,32 +25,58 @@ public class Xls2ListTest {
         }
     }
 
-
-   /* @Test
-    public void test1() {
+    @Test
+    public void testMap() {
         try {
             List list = EasyXls.xls2List(
-                    XlsTest.class.getResource("/xls/owners.xml").getPath(),
-                    new FileInputStream("d:/owners.xls"));
-            System.out.println(list != null ? list.size() : 0);
+                    Xls2ListTest.class.getResource("/ChargesMap.xml").getPath(),
+                    new File(Xls2ListTest.class.getResource("2.xls").getPath()));
+            System.out.println(list);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void test2() {
+    public void testMap2() {
+        InputStream is = Xls2ListTest.class.getResourceAsStream("2.xls");
         try {
-            //创建一个配置
-            ExcelConfig config = new ExcelConfig.Builder(Owner.class)
+            String xmlPath = Xls2ListTest.class.getResource("/ChargesMap.xml").getPath();
+            List list = EasyXls.xls2List(xmlPath, is);
+
+            Map map = new HashMap();
+            map.put("year", 2013);
+            map.put("ownersname", "测试户主");
+            list.add(map);
+
+            EasyXls.list2Xls(list, xmlPath, "d:/", "testMap.xls");
+
+            ExcelConfig config = new ExcelConfig.Builder(Charges.class)
                     .sheetNum(0)
                     .startRow(1)
-                    .maxRow(1)
+                    .separater(",")
                     .key("name")
-                    .addColumn("name", "address", "user", "conarea").build();
-            List list = EasyXls.xls2List(config, new FileInputStream("d:/owners.xls"));
+                    .addColumn("year,年度", "communityid,小区ID",
+                            "roomno,房号", "ownersid,户主ID",
+                            "ownersname,户主姓名", "property,物业费").build();
+            EasyXls.list2Xls(config, list, "d:/", "testMap2.xls");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testConfig() {
+        try {
+            //创建一个配置
+            ExcelConfig config = new ExcelConfig.Builder(Charges.class)
+                    .sheetNum(0)
+                    .startRow(1)
+                    .key("name")
+                    .addColumn("year", "communityid", "roomno", "ownersid", "ownersname", "property").build();
+            List list = EasyXls.xls2List(config, Xls2ListTest.class.getResourceAsStream("2.xls"));
             for (int i = 0; i < list.size(); i++) {
-                System.out.println(((Owner)list.get(i)).getName());
+                System.out.println(((Charges) list.get(i)).getOwnersname());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,73 +84,20 @@ public class Xls2ListTest {
     }
 
     @Test
-    public void test2Map() {
+    public void testConfigMap() {
         try {
             //创建一个配置
             ExcelConfig config = new ExcelConfig.Builder(HashMap.class)
                     .sheetNum(0)
                     .startRow(1)
-                    .maxRow(1)
                     .key("name")
-                    .addColumn("name", "address", "user", "conarea").build();
-            List list = EasyXls.xls2List(config, new FileInputStream("d:/owners.xls"));
+                    .addColumn("year", "communityid", "roomno", "ownersid", "ownersname", "property").build();
+            List list = EasyXls.xls2List(config, Xls2ListTest.class.getResourceAsStream("2.xls"));
             for (int i = 0; i < list.size(); i++) {
-                System.out.println(((Map)list.get(i)).get("name"));
+                System.out.println(((Map) list.get(i)).get("ownersname"));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    @Test
-    public void test3() {
-        try {
-            List list = new ArrayList();
-
-            System.out.println(list.size());
-
-            for (int i = 0; i < 100; i++) {
-                Owner owner = new Owner();
-                owner.setName("测试" + i);
-                owner.setAddress("1-" + i);
-                owner.setConarea(new BigDecimal(String.valueOf(100 * Math.random() + i * Math.random())).setScale(2,BigDecimal.ROUND_HALF_UP));
-                list.add(owner);
-            }
-
-            ExcelConfig config = new ExcelConfig.Builder(Owner.class)
-                    .sheetName("姓名sheet")
-                    .addColumn("name", "姓名", true)
-                    .addColumn("address","房号")
-                    .addColumn("conarea","建筑面积").build();
-            EasyXls.list2Xls(config, list, "d:/", "owners.xls");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void test3Map() {
-        try {
-            List list = new ArrayList();
-
-            System.out.println(list.size());
-
-            for (int i = 0; i < 100; i++) {
-                Map owner = new HashMap();
-                owner.put("name","测试" + i);
-                owner.put("address","1-" + i);
-                owner.put("conarea",new BigDecimal(String.valueOf(100 * Math.random() + i * Math.random())).setScale(2,BigDecimal.ROUND_HALF_UP));
-                list.add(owner);
-            }
-
-            ExcelConfig config = new ExcelConfig.Builder(HashMap.class)
-                    .sheetName("姓名sheet")
-                    .addColumn("name", "姓名", true)
-                    .addColumn("address","房号")
-                    .addColumn("conarea","建筑面积").build();
-            EasyXls.list2Xls(config, list, "d:/", "owners2.xls");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 }

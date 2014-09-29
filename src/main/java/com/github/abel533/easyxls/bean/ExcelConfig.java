@@ -181,6 +181,7 @@ public class ExcelConfig {
         private ExcelConfig excel;
         private Class<?> clazz;
         private String key;
+        private String separater = ",";
 
         public Builder(Class<?> clazz) {
             this.clazz = clazz;
@@ -211,6 +212,11 @@ public class ExcelConfig {
 
         public Builder maxRow(int maxRow) {
             this.excel.maxRow = maxRow;
+            return this;
+        }
+
+        public Builder separater(String separater) {
+            this.separater = separater;
             return this;
         }
 
@@ -249,7 +255,25 @@ public class ExcelConfig {
         public Builder addColumn(String... names) {
             if (names != null && names.length > 0) {
                 for (String name : names) {
-                    addColumn(new Column(name, name));
+                    if (name.indexOf(separater) > 0) {
+                        String[] ns = name.split(separater);
+                        switch (ns.length) {
+                            case 1:
+                                addColumn(new Column(ns[0], ns[0]));
+                                break;
+                            case 2:
+                                addColumn(new Column(ns[0], ns[1]));
+                                break;
+                            case 3:
+                                addColumn(new Column(ns[0], ns[1], Integer.parseInt(ns[2])));
+                                break;
+                            case 4:
+                                addColumn(new Column(ns[0], ns[1], Integer.parseInt(ns[2]), ns[3]));
+                                break;
+                        }
+                    } else {
+                        addColumn(new Column(name, name));
+                    }
                 }
             }
             return this;
@@ -263,12 +287,12 @@ public class ExcelConfig {
             return addColumn(new Column(name, header, width));
         }
 
-        public Builder addColumn(String name, String header, Boolean key) {
-            return addColumn(new Column(name, header, key));
+        public Builder addColumn(String name, String header, Class<?> type) {
+            return addColumn(new Column(name, header, type));
         }
 
-        public Builder addColumn(String name, String header, Integer width, Boolean key) {
-            return addColumn(new Column(name, header, width, key));
+        public Builder addColumn(String name, String header, Integer width, Class<?> type) {
+            return addColumn(new Column(name, header, width, type));
         }
 
         public ExcelConfig build() {

@@ -23,22 +23,27 @@ public class Column {
     }
 
     public Column(String name, String header, Integer width) {
-        this.name = name;
-        this.header = header;
+        this(name, header);
         this.width = width;
     }
 
-    public Column(String name, String header, Boolean key) {
-        this.name = name;
-        this.header = header;
-        this.key = key;
+    public Column(String name, String header, String type) {
+        this(name, header);
+        this.type = type;
     }
 
-    public Column(String name, String header, Integer width, Boolean key) {
-        this.name = name;
-        this.header = header;
+    public Column(String name, String header, Class<?> type) {
+        this(name, header, type.getCanonicalName());
+    }
+
+    public Column(String name, String header, Integer width, String type) {
+        this(name, header);
         this.width = width;
-        this.key = key;
+        this.type = type;
+    }
+
+    public Column(String name, String header, Integer width, Class<?> type) {
+        this(name, header, width, type.getCanonicalName());
     }
 
     public String getType() {
