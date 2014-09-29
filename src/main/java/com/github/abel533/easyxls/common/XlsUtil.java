@@ -181,6 +181,7 @@ public class XlsUtil {
                 sheet.getRows() : (config.getMaxRow() > 0 ? (config.getMaxRow() + config.getStartRow()) : sheet.getRows());
 
         for (int i = config.getStartRow(); i < rowLength; i++) {
+            //TODO Map类型要特殊处理
             Object obj = Class.forName(config.getClazz()).newInstance();
             for (int j = 0; j < length; j++) {
                 setValue(obj, names[j], types[j], sheet.getCell(j, i));
