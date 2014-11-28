@@ -361,13 +361,15 @@ public class XlsUtil {
             int column = 0;
             int rowadd = 0;
             //写入标题
-            for (column = 0; column < header.length; column++) {
-                sheet.addCell(new Label(column, row + rowadd, header[column]));
-                if (config.getColumn(column).getWidth() != null) {
-                    sheet.setColumnView(column, config.getColumn(column).getWidth() / 7);
+            if (config.getHeader()) {
+                for (column = 0; column < header.length; column++) {
+                    sheet.addCell(new Label(column, row + rowadd, header[column]));
+                    if (config.getColumn(column).getWidth() != null) {
+                        sheet.setColumnView(column, config.getColumn(column).getWidth() / 7);
+                    }
                 }
+                rowadd++;
             }
-            rowadd++;
             //写入内容//行
             for (row = 0; row < list.size(); row++) {
                 Object rowData = list.get(row);

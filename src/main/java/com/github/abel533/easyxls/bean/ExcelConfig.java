@@ -41,6 +41,10 @@ public class ExcelConfig {
      * 读取最大行数
      */
     private int maxRow = -1;
+    /**
+     * 是否导出标题，默认导出
+     */
+    private Boolean header = Boolean.TRUE;
 
     @XmlElement(name = "columns")
     private Columns columns;
@@ -105,6 +109,13 @@ public class ExcelConfig {
         return getColumns().getColumns().get(index);
     }
 
+    public Boolean getHeader() {
+        return header;
+    }
+
+    public void setHeader(Boolean header) {
+        this.header = header;
+    }
 
     /**
      * 获取excel标题
@@ -217,6 +228,11 @@ public class ExcelConfig {
 
         public Builder separater(String separater) {
             this.separater = separater;
+            return this;
+        }
+
+        public Builder header(Boolean header) {
+            this.excel.header = header;
             return this;
         }
 

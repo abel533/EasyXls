@@ -65,6 +65,8 @@ EasyXls.openGenerater();
 
 - **maxRow:**最大读取行，超出行数的不进行读取【读】   
 
+- **header:**是否导出标题，默认导出【写】   
+
 ###列Column配置
 
 - **name:**对应的java字段名

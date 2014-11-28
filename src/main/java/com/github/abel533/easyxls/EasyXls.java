@@ -21,7 +21,7 @@ public class EasyXls {
     }
 
     /**
-     * 导入xml到List
+     * 导入xls到List
      *
      * @param xmlPath xml完整路径
      * @param xlsFile xls文件路径
@@ -33,7 +33,7 @@ public class EasyXls {
     }
 
     /**
-     * 导入xml到List
+     * 导入xls到List
      *
      * @param config  配置
      * @param xlsFile xls文件路径
@@ -45,7 +45,7 @@ public class EasyXls {
     }
 
     /**
-     * 导入xml到List
+     * 导入xls到List
      *
      * @param xmlPath     xml完整路径
      * @param inputStream xls文件流
@@ -57,7 +57,7 @@ public class EasyXls {
     }
 
     /**
-     * 导入xml到List
+     * 导入xls到List
      *
      * @param config      配置
      * @param inputStream xls文件流
