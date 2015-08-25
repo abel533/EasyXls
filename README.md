@@ -16,6 +16,14 @@
 
 6. 支持java编码创建`Config`配置
 
+##Maven
+```xml
+<dependency>
+  <groupId>com.github.abel533</groupId>
+  <artifactId>EasyXls</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
 
 ##xml配置向导
 
