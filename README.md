@@ -21,9 +21,14 @@
 <dependency>
   <groupId>com.github.abel533</groupId>
   <artifactId>EasyXls</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
+
+##版本1.1.0 - 2015-10-08
+
+- 输出excel时，增加对`OutputStream`支持(1.0.0版本时支持`InputStream`转换为`List<?>`)
+- 对IO流的支持可以方便上传和下载时的操作
 
 ##xml配置向导
 

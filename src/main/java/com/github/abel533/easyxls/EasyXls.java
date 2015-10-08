@@ -5,6 +5,7 @@ import com.github.abel533.easyxls.common.XlsUtil;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -94,6 +95,32 @@ public class EasyXls {
      */
     public static boolean list2Xls(ExcelConfig config, List<?> list, String filePath, String fileName) throws Exception {
         return XlsUtil.list2Xls(config, list, filePath, fileName);
+    }
+
+    /**
+     * 导出list对象到excel
+     *
+     * @param list     导出的list
+     * @param xmlPath  xml完整路径
+     * @param outputStream 输出流
+     * @return 处理结果，true成功，false失败
+     * @throws Exception
+     */
+    public static boolean list2Xls(List<?> list, String xmlPath, OutputStream outputStream) throws Exception {
+        return XlsUtil.list2Xls(list, xmlPath, outputStream);
+    }
+
+    /**
+     * 导出list对象到excel
+     *
+     * @param config   配置
+     * @param list     导出的list
+     * @param outputStream 输出流
+     * @return 处理结果，true成功，false失败
+     * @throws Exception
+     */
+    public static boolean list2Xls(ExcelConfig config, List<?> list, OutputStream outputStream) throws Exception {
+        return XlsUtil.list2Xls(config, list, outputStream);
     }
 
 }

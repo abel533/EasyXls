@@ -9,7 +9,9 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -298,7 +300,6 @@ public class XlsUtil {
         }
     }
 
-
     /**
      * 导出list对象到excel
      *
@@ -319,11 +320,28 @@ public class XlsUtil {
         }
         try {
             ExcelConfig config = getEasyExcel(xmlPath);
-            list2Xls(config, list, filePath, fileName);
+            return list2Xls(config, list, filePath, fileName);
         } catch (Exception e1) {
             return false;
         }
-        return true;
+    }
+
+    /**
+     * 导出list对象到excel
+     *
+     * @param list     导出的list
+     * @param xmlPath  xml完整路径
+     * @param outputStream 输出流
+     * @return 处理结果，true成功，false失败
+     * @throws Exception
+     */
+    public static boolean list2Xls(List<?> list, String xmlPath, OutputStream outputStream) throws Exception {
+        try {
+            ExcelConfig config = getEasyExcel(xmlPath);
+            return list2Xls(config, list, outputStream);
+        } catch (Exception e1) {
+            return false;
+        }
     }
 
     /**
@@ -344,16 +362,38 @@ public class XlsUtil {
                 throw new RuntimeException("创建导出目录失败!");
             }
         }
+        OutputStream outputStream = null;
         try {
-            String[] header = config.getHeaders();
-            String[] names = config.getNames();
-            String[] values;
-
             if (!fileName.toLowerCase().endsWith(EXCEL)) {
                 fileName += EXCEL;
             }
             File excelFile = new File(filePath + "/" + fileName);
-            WritableWorkbook wb = Workbook.createWorkbook(excelFile);
+            outputStream = new FileOutputStream(excelFile);
+            return list2Xls(config, list, outputStream);
+        } catch (Exception e1) {
+            return false;
+        } finally {
+            if(outputStream != null){
+                outputStream.close();
+            }
+        }
+    }
+
+    /**
+     * 导出list对象到excel
+     *
+     * @param config   配置
+     * @param list     导出的list
+     * @param outputStream 输出流
+     * @return 处理结果，true成功，false失败
+     * @throws Exception
+     */
+    public static boolean list2Xls(ExcelConfig config, List<?> list, OutputStream outputStream) throws Exception {
+        try {
+            String[] header = config.getHeaders();
+            String[] names = config.getNames();
+            String[] values;
+            WritableWorkbook wb = Workbook.createWorkbook(outputStream);
             String sheetName = (config.getSheet() != null && !config.getSheet().equals("")) ? config.getSheet() : ("sheet" + config.getSheetNum());
             WritableSheet sheet = wb.createSheet(sheetName, 0);
 
